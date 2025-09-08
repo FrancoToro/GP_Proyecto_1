@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Terrain))]
 public class DungeonTerrainGenerator : MonoBehaviour
@@ -9,7 +10,7 @@ public class DungeonTerrainGenerator : MonoBehaviour
     public int height = 256;
     public int radius = 32;
     public float amplitude = 20f;
-    public float treeHeightThreshold = 0.3f; // normalizado (0-1)
+    public float treeHeightThreshold = 0.7f; // normalizado (0-1)
 
     [Header("Dungeon")]
     public int numRooms = 5;
@@ -68,38 +69,22 @@ public class DungeonTerrainGenerator : MonoBehaviour
         terrainData.size = new Vector3(width, amplitude, height);
         terrainData.SetHeights(0, 0, heights);
 
-        // 3. Colocar árboles del sistema de Terrain
-        List<TreeInstance> treeInstances = new List<TreeInstance>();
-        for (int i = 0; i < maxTrees; i++)
+        int currentTrees = 0;
+        for (int i = 0; i < width; i++)
         {
-            int tx = Random.Range(0, width);
-            int ty = Random.Range(0, height);
-            float h = heights[ty, tx];
-
-            if (!dungeonMap[tx, ty] && h > treeHeightThreshold)
+            for (int j = 0; j < height; j++)
             {
-                TreeInstance tree = new TreeInstance
+                if (!dungeonMap[i, j])
                 {
-                    position = new Vector3(
-                        (float)tx / width,
-                        h,
-                        (float)ty / height
-                    ),
-                    prototypeIndex = 0,
-                    widthScale = Random.Range(0.8f, 1.2f),
-                    heightScale = Random.Range(0.8f, 1.5f),
-                    color = Color.white,
-                    lightmapColor = Color.white
-                };
-                treeInstances.Add(tree);
+                    float h = heights[i, j];
+                    if (h > treeHeightThreshold && Random.value > 0.85f && currentTrees < maxTrees)
+                    {
+                        Instantiate(treePrefab, new Vector3(i, h, j), Quaternion.identity, transform);
+                        currentTrees++;
+                    }
+                }
             }
         }
-
-        TreePrototype[] prototypes = new TreePrototype[1];
-        prototypes[0] = new TreePrototype();
-        prototypes[0].prefab = treePrefab;
-        terrainData.treePrototypes = prototypes;
-
     }
 
     void GenerateRooms(bool[,] map)

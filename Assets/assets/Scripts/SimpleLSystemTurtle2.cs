@@ -6,7 +6,7 @@ public class SimpleLSystemTurtle2 : MonoBehaviour
 {
     [Header("Configuración del L-System")]
     [SerializeField] public string axiom = "F";
-    [SerializeField] private string rule = "F[+F]F[-F]F";
+    [SerializeField] private string rule = "F[+F]F[-F*F]F[/F]";
 
     [Header("Generaciones")]
     [SerializeField, Range(1, 6)] public int minGenerations = 1;
@@ -25,7 +25,8 @@ public class SimpleLSystemTurtle2 : MonoBehaviour
 
     private string currentSentence;
     private LineRenderer lineRenderer;
-    private float chosenAngle;
+    private float chosenAngleZ;
+    private float chosenAngleX;
     private int chosenGenerations;
 
     private void Start()
@@ -35,7 +36,8 @@ public class SimpleLSystemTurtle2 : MonoBehaviour
         lineRenderer.useWorldSpace = true; // usar coordenadas globales
 
         // Valores aleatorios
-        chosenAngle = Random.Range(minAngle, maxAngle);
+        chosenAngleZ = Random.Range(minAngle, maxAngle);
+        chosenAngleX = Random.Range(minAngle, maxAngle);
         chosenGenerations = Random.Range(minGenerations, maxGenerations + 1);
 
         GenerateSentence();
@@ -45,7 +47,8 @@ public class SimpleLSystemTurtle2 : MonoBehaviour
     [ContextMenu("Regenerar L-System Aleatorio")]
     public void RegenerateRandom()
     {
-        chosenAngle = Random.Range(minAngle, maxAngle);
+        chosenAngleZ = Random.Range(minAngle, maxAngle);
+        chosenAngleX = Random.Range(minAngle, maxAngle);
         chosenGenerations = Random.Range(minGenerations, maxGenerations + 1);
 
         GenerateSentence();
@@ -73,8 +76,9 @@ public class SimpleLSystemTurtle2 : MonoBehaviour
     private void DrawSentence()
     {
         Vector3 position = transform.position; // arranca desde donde se instanció
-        float currentAngle = 90f; 
-        Stack<(Vector3 pos, float angle)> stack = new Stack<(Vector3, float)>();
+        float currentAngleZ = 90f;
+        float currentAngleX = 90f;
+        Stack<(Vector3 pos, float angleZ, float AngleX)> stack = new Stack<(Vector3, float, float)>();
 
         List<Vector3> points = new List<Vector3>();
         points.Add(position);
@@ -84,26 +88,35 @@ public class SimpleLSystemTurtle2 : MonoBehaviour
             switch (c)
             {
                 case 'F':
-                    position += Quaternion.Euler(0, 0, currentAngle) * Vector3.right * lineLength;
+                    position += Quaternion.Euler(0, currentAngleX, currentAngleZ) * Vector3.right * lineLength;
                     points.Add(position);
                     break;
 
                 case '+':
-                    currentAngle += chosenAngle;
+                    currentAngleZ += chosenAngleZ;
                     break;
 
                 case '-':
-                    currentAngle -= chosenAngle;
+                    currentAngleZ -= chosenAngleZ;
+                    break;
+
+                case '*':
+                    currentAngleX += chosenAngleX;
+                    break;
+
+                case '/':
+                    currentAngleX -= chosenAngleX;
                     break;
 
                 case '[':
-                    stack.Push((position, currentAngle));
+                    stack.Push((position, currentAngleZ, currentAngleX));
                     break;
 
                 case ']':
                     var state = stack.Pop();
                     position = state.pos;
-                    currentAngle = state.angle;
+                    currentAngleZ = state.angleZ;
+                    currentAngleX = state.AngleX;
                     points.Add(position);
                     break;
             }

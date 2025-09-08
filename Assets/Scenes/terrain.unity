@@ -166,7 +166,7 @@ MonoBehaviour:
   width: 256
   height: 256
   radius: 10
-  amplitude: 90
+  amplitude: 10
   treeHeightThreshold: 0.3
   numRooms: 10
   roomRadius: 8

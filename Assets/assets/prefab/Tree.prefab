@@ -153,11 +153,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   axiom: F
-  rule: F[+F]F[-F]F
+  rule: F[+F/F]F[-F*F]F
   minGenerations: 1
   maxGenerations: 4
   minAngle: 20
-  maxAngle: 30
+  maxAngle: 40
   lineLength: 0.5
   lineWidth: 0.05
   lineMaterial: {fileID: 0}
