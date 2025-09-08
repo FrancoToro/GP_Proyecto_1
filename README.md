@@ -1,4 +1,4 @@
-README.md – Procedural Dungeon & Terrain Generator
+Procedural Dungeon & Terrain Generator
 🎮 Descripción del Proyecto
 
 Este proyecto implementa Generación Procedural de Contenido (PCG) en Unity, combinando tres técnicas vistas en clases:
