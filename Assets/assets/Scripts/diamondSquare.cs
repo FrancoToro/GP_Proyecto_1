@@ -54,16 +54,6 @@ public class scr_DiamondSquare : MonoBehaviour
         return (rad / 2 >= 1) ? DiamondSquare(hm, rad / 2, amp * 0.5f) : hm;
     }
 
-    // Square step
-    private float[,] Squares(float[,] hm, int rad, float amp)
-    {
-        for (int x = rad; x < w; x += (rad * 2))
-            for (int y = rad; y < h; y += (rad * 2))
-                hm = SquareStep(hm, x, y, rad, amp);
-
-        return hm;
-    }
-
     // Diamond step
     private float[,] Diamonds(float[,] hm, int rad, float amp)
     {
@@ -76,6 +66,16 @@ public class scr_DiamondSquare : MonoBehaviour
 
             yIteration++;
         }
+        return hm;
+    }
+
+    // Square step
+    private float[,] Squares(float[,] hm, int rad, float amp)
+    {
+        for (int x = rad; x < w; x += (rad * 2))
+            for (int y = rad; y < h; y += (rad * 2))
+                hm = SquareStep(hm, x, y, rad, amp);
+
         return hm;
     }
 
